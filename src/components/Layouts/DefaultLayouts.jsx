@@ -74,8 +74,17 @@ const menus = [
     },
 ]
   const DefaultLayout = ({children}) => {
-    const navigate = useNavigate()
-    const [collapsed, setCollapsed] = useState(false)
+    const navigate = useNavigate();
+    const [collapsed, setCollapsed] = useState(false);
+    const [totalCart, setTotalCart] = useState(0);
+    const cart = useSelector((state) => state.cart.data);
+
+    useEffect(() => {
+      const sum = cart.reduce((acc, item) => {
+        return acc + item.qty;
+      }, 0);
+      setTotalCart(sum);
+    }, [cart])
 
   const toggle = () => {
     setCollapsed(
@@ -112,7 +121,9 @@ const menus = [
             <IconButton color="inherit" 
             onClick={() => navigate('/cartpage')}
             >
-                <ShoppingCartIcon className="text-white mx-3"/>
+              <Badge badgeContent={totalCart} color="secondary" className="mr-3">
+                <ShoppingCartIcon className="text-white "/>
+              </Badge>
             </IconButton>
           </Header>
           <Content

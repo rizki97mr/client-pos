@@ -12,6 +12,8 @@ import ListAddress from './pages/listAddress'
 import ListTag from './pages/listTag'
 import ListCategory from './pages/listCategory'
 import DetailProduct from './pages/detailProduct'
+import { Provider } from "react-redux"
+import store from "./redux/store"
 
 const router = createBrowserRouter([
   {
@@ -55,6 +57,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    <Provider store={store}>
     <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>,
+
 )
