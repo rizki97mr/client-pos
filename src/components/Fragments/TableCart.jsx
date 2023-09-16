@@ -44,7 +44,7 @@ const TableCart = (props) => {
                 const product = products.find((product) => product.id === item.id);
                 return (
                     <tr key={item.id}>
-                        <td>{product.title}</td>
+                        <td>{product.name}</td>
                         <td>Rp {numberWithCommas(product.price)}</td>
                         <td>{item.qty}</td>
                         <td>Rp {numberWithCommas (item.qty * product.price)}</td>

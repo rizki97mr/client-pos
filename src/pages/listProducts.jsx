@@ -8,6 +8,7 @@ import CardMedia from '@mui/material/CardMedia';
 import DefaultLayout from '../components/Layouts/DefaultLayouts';
 import { getAllitems } from '../services/product.service';
 import { useLogin } from '../hooks/useLogin';
+import axiosDriver from '../config/axios';
 
 
 const ListProductPage = () => {
@@ -48,6 +49,7 @@ useEffect(() => {
   });
 }, [])
 
+
 //data
 
 const columns = [
@@ -63,9 +65,9 @@ const columns = [
     {title: 'Name', dataIndex:'name'},
     {title: 'Description', dataIndex:'description'},
     {title:'Price', dataIndex:'price'},
-    {title: 'Category', dataIndex:'category.name',
-    render:(text, record) => record.category.name
-    }, 
+    // {title: 'Category', dataIndex:'category.name',
+    // render:(text, record) => record.category.name
+    // }, 
     // {title: 'Tag', dataIndex:'tag.name',
     // render:(text, record) => record.tag.name
     // }, 
@@ -87,14 +89,28 @@ const columns = [
 
 // handle submit 
 const handleSubmit = async (value) => {
+  
   try {
+    const file = value.upload[0]?.originFileObj;
+
+    const formData = new FormData();
+      formData.append("image", file);
+      formData.append("name", value.name);
+      formData.append("description", value.description);
+      formData.append("price", value.price);
+      formData.append("tag", value.tag);
+      formData.append("category", value.category);
+      
+
     console.log(value)
     // dispatch({
     //   type:'SHOW_LOADING'
     // });
-    const res = await axios.post("http://localhost:3000/api/products", value);
+    const res = await axiosDriver.post("http://localhost:3000/api/products", formData);
     message.success('item added Sucessfully')
-    getAllitems();
+    getAllitems((data) => {
+      setItemsData(data.data)
+   });
     setPopupModal(false)
     // dispatch({type: "HIDE_LOADING"});
   } catch (error) {
@@ -147,7 +163,7 @@ const handleSubmit = async (value) => {
             getValueFromEvent={normFile}
             extra="image"
           >
-            <Upload name="logo" action="/upload.do" listType="picture">
+            <Upload name="logo" listType="picture">
             <Button icon={<UploadOutlined />}>Click to upload</Button>
           </Upload>
           </Form.Item>

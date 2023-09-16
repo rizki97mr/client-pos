@@ -1,4 +1,5 @@
 import axios from "axios";
+import axiosDriver from "../config/axios";
 
 export const getProducts = (callback) => {
     axios.get("https://fakestoreapi.com/products")
@@ -21,7 +22,7 @@ export const getDetailProducts = (id, callback) => {
 }
 
 export const getAllitems = (callback) => {
-    axios.get("http://localhost:3000/api/products")
+    axiosDriver.get("http://localhost:3000/api/products")
         .then((res) => {
             callback(res.data);
         })
