@@ -4,6 +4,7 @@ import Button from "../Elements/Button"
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/slices/cartSlice";
+import { message } from "antd";
 
 const CardProduct = (props) => {
     const { children } = props
@@ -44,7 +45,7 @@ const Body = (props) => {
 };
 
 const Footer = (props) => {
-    const { price, id } = props;
+    const { price, _id } = props;
     const dispatch = useDispatch();
 
     return (
@@ -52,7 +53,10 @@ const Footer = (props) => {
             <span className='text-xl font-bold text-white'>Rp {numberWithCommas(price)}</span>
             <Button 
                 classname="bg-blue-600" 
-                onClick={() => dispatch(addToCart({ id, qty: 1 }))}
+                onClick={() => {
+                    dispatch(addToCart({ _id, qty: 1 }));
+                    message.success('item added Sucessfully');
+                }}
             >
                 <AddShoppingCartIcon />
             </Button>

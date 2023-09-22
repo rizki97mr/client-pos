@@ -43,22 +43,22 @@ const menus = [
           {
               key: 'product',
               icon: <ShoppingOutlined />,
-              label: <Link to="/listproducts">Product</Link>,
+              label: <Link to="/dataproducts">Product</Link>,
           },
           {
               key: 'tag',
               icon: <TagOutlined />,
-              label:<Link to="/listtag">Tag</Link>,
+              label:<Link to="/datatag">Tag</Link>,
           },
           {
               key: 'category',
               icon: <CopyOutlined />,
-              label: <Link to="/listcategory">Category</Link>
+              label: <Link to="/datacategory">Category</Link>
           },
           {
               key: 'address',
               icon: <AuditOutlined />,
-              label: <Link to="/listaddress">Address</Link>,
+              label: <Link to="/dataaddress">Address</Link>,
           },    
       ]
     },
@@ -114,12 +114,12 @@ const menus = [
             {React.createElement(
               collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
               {
-                className: "trigger",
+                className: "trigger text-white font-bold",
                 onClick: toggle,
               }
             )}
             <IconButton color="inherit" 
-            onClick={() => navigate('/cartpage')}
+            onClick={() => navigate('/cart')}
             >
               <Badge badgeContent={totalCart} color="secondary" className="mr-3">
                 <ShoppingCartIcon className="text-white "/>
