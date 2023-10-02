@@ -1,20 +1,76 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import DefaultLayout from '../components/Layouts/DefaultLayouts'
 import { useLogin } from '../hooks/useLogin';
+import { getAllTag } from '../services/product.service';
+import { Button, Form, Input, Modal, message } from 'antd'
+import axiosDriver from '../config/axios';
+import Tag from '../components/Fragments/Tags';
 
 const ListTag = () => {
+  const [tags, setTags] = useState([]);
+  const [popupModal, setPopupModal] = useState(false)
   useLogin();
+
+  useEffect(() => {
+    getAllTag((data) => {
+      setTags(data)
+    })
+  }, [])
+
+  const getAllTags = async () => {
+    try {
+        let response = await axiosDriver.get("http://localhost:3000/api/tag")
+        setTags(response.data)
+    } catch (e) {
+        console.log(e.message)
+    }
+}
+
+  const handleSubmit = async (value) => {
+  
+    try {
+      console.log(value)
+      // dispatch({
+      //   type:'SHOW_LOADING'
+      // });
+      await axiosDriver.post("http://localhost:3000/api/tag", {name:value.name});
+      message.success('item added Sucessfully')
+      setPopupModal(false)
+      getAllTags();
+      // dispatch({type: "HIDE_LOADING"});
+    } catch (error) {
+      message.error('something wrong')
+      console.log(error)
+    }
+  }
+
   return (
     <DefaultLayout>
-      <h1 className='font-bold text-2xl my-5'>List Tag</h1>       
-          <button type="button" class="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Purple to Blue</button>
-          <button class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-            <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                Purple to blue
-            </span>
-          </button>
-          <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Default</button>
-          <button type="button" class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Alternative</button>
+      {/* MODAL Add Tag*/}
+      <Modal 
+          title="Add Tag" 
+          open={popupModal} 
+          footer={null}
+          onCancel={() => setPopupModal(false)}
+        >
+        <Form layout='vertical' onFinish={handleSubmit}>
+          <Form.Item name="name" value='name' label="Name">
+            <Input />
+          </Form.Item>
+          <Form.Item>
+          <Button type='primary' htmlType='submit' className='bg-blue-600 text-white my-3'>SAVE</Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <h1 className='font-bold text-2xl my-5'>List Tag</h1>  
+      <div className='w-full'>
+      <Button onClick={() => setPopupModal(true)}
+       className="bg-blue-600 text-white text-base my-3 align-center " >
+        Add New Tag
+      </Button>
+      </div>
+      <Tag />
     </DefaultLayout>
   )
 }

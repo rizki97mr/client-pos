@@ -14,6 +14,14 @@ import ListCategory from './pages/listCategory'
 import DetailProduct from './pages/detailProduct'
 import { Provider } from "react-redux"
 import store from "./redux/store"
+import CartPage from './pages/cartPage'
+import Invoice from './pages/invoice'
+import DataProduct from './pages/dataProduct'
+import FormModal from './components/Fragments/EditProduct'
+import EditProduct from './components/Fragments/EditProduct'
+import EditAddres from './components/Fragments/EditAddres'
+import TableCart from './components/Fragments/TableCart'
+
 
 const router = createBrowserRouter([
   {
@@ -34,24 +42,48 @@ const router = createBrowserRouter([
     element: <DetailProduct /> ,
   },
   {
-    path: "/listproducts",
+    path: "/dataproducts",
     element: <ListProductPage />
   },
   {
-    path: "/listaddress",
+    path: "/dataaddress",
     element: <ListAddress />
   },
   {
-    path: "/listtag",
+    path: "/datatag",
     element: <ListTag />
   },
   {
-    path: "/listcategory",
+    path: "/datacategory",
     element: <ListCategory />
   },
   {
     path: "/report",
     element: <ReportPage />
+  },
+  {
+    path: "/cart",
+    element: <CartPage />
+  },
+  {
+    path: "/invoice",
+    element: <Invoice />
+  },
+  {
+    path: "/dataproducts/edit/:id",
+    element: <EditProduct />
+  },
+  {
+    path: "/dataaddress/edit/:id",
+    element: <EditAddres />
+  },
+  {
+    path: "/test",
+    element: <Invoice />
+  },
+  {
+    path: "/tcart",
+    element: <TableCart />
   },
 ])
 

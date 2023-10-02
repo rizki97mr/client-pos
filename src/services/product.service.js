@@ -1,18 +1,8 @@
 import axios from "axios";
 import axiosDriver from "../config/axios";
 
-export const getProducts = (callback) => {
-    axios.get("https://fakestoreapi.com/products")
-        .then((res) => {
-            callback(res.data);
-        })
-        .catch((err) => {
-            console.log(err);
-        })
-}
-
-export const getDetailProducts = (id, callback) => {
-    axios.get(`https://fakestoreapi.com/products/${id}`)
+export const getDetailItems = (id, callback) => {
+    axiosDriver.get(`http://localhost:3000/api/products/${id}`)
         .then((res) => {
             callback(res.data);
         })
@@ -31,13 +21,73 @@ export const getAllitems = (callback) => {
         })
 }
 
-// export const getAllitems = async (callback) => {
+export const getProducts = async (params) => {
+    try {
+        const response = await axiosDriver.get("http://localhost:3000/api/products",{params})
+        return response.data
+    } catch (error) {
+        console.log(error)
+    }
+} 
+
+export const deleteitems = (_id, callback) => {
+    axiosDriver.get(`http://localhost:3000/api/products/${id}`)
+        .then((res) => {
+            callback(res.data);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+}
+
+
+
+// export const deleteItems = async (id) => {
 //     try {
-//       const { data } = await axios.get("http://localhost:3000/api/products")
-//       callback(res.data);
-//     //   dispatch({type: "HIDE_LOADING"});
-//       console.log(data.data)
+//       await axiosDriver.delete(`http://localhost:3000/api/products/${id}`);
+//       getAllitems();
 //     } catch (error) {
-//       console.log(error)
+//       console.log(error);
 //     }
-//   }
+//   };
+
+export const getAllTag= (callback) => {
+    axiosDriver.get("http://localhost:3000/api/tag")
+        .then((res) => {
+            callback(res.data);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+}
+
+export const getAllCategory= (callback) => {
+    axiosDriver.get("http://localhost:3000/api/category")
+        .then((res) => {
+            callback(res.data);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+}
+
+export const getAllAddres= (callback) => {
+    axiosDriver.get("http://localhost:3000/api/delivery-addresses")
+        .then((res) => {
+            callback(res.data);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+}
+
+export const getAllOrder= (callback) => {
+    axiosDriver.get("http://localhost:3000/api/orders")
+        .then((res) => {
+            callback(res.data);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+}
+

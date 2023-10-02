@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import { useParams }from "react-router-dom";
 import { getDetailItems } from "../services/product.service";
 import DefaultLayout from "../components/Layouts/DefaultLayouts";
+import { useDispatch } from "react-redux";
 import { numberWithCommas } from "../utils/utils";
+// import { addToCart } from "../redux/slices/cartSlice";
 
 const DetailProduct = () => {
   const [detail, setDetail] = useState ({});
   const {id} = useParams();
+//   const dispatch = useDispatch();
 
   useEffect(() => {
     getDetailItems(id, (data) => {
@@ -43,13 +46,23 @@ const DetailProduct = () => {
                 </div>
                 <div className="flex space-x-4 mb-6 text-sm font-medium">
                 <div className="flex-auto flex space-x-4">
-                    <button className="h-10 px-6 font-semibold rounded-md bg-black text-white" type="submit">
-                    Add to Cart
+                    <button   
+                        className="h-10 px-6 font-semibold rounded-md bg-black text-white" type="submit"
+                    >
+                        Buy
+                    </button>
+                    <button 
+                    // onClick={() => {
+                    //     dispatch(addToCart({ _id, qty: 1 }));
+                    //     message.success('item added Sucessfully');
+                    // }}
+                    className="h-10 px-6 font-semibold rounded-md border border-slate-200 text-slate-900" type="button">
+                        Add to Cart
                     </button>
                 </div>
                 </div>
                 <p className="text-sm text-slate-700">
-                    {detail.description}
+                    {detail._id}
                 </p>
             </form>
             </div>

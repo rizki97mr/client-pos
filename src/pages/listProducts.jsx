@@ -1,138 +1,109 @@
-import React, { useEffect, useState } from 'react'
-import { Button, Form, Input, Modal, Select, Table, Upload, message } from 'antd'
-import { DeleteOutlined, EditOutlined} from '@ant-design/icons';
-// import { useDispatch } from 'react-redux';
-import axios from 'axios';
-import { UploadOutlined } from '@mui/icons-material';
-import CardMedia from '@mui/material/CardMedia';
-import DefaultLayout from '../components/Layouts/DefaultLayouts';
-import { getAllitems } from '../services/product.service';
+import React, { useEffect, useRef, useState } from 'react'
+import DefaultLayout from '../components/Layouts/DefaultLayouts'
+import { getAllCategory, getAllTag, getAllitems } from '../services/product.service';
 import { useLogin } from '../hooks/useLogin';
+import { DeleteOutlined, EditOutlined} from '@ant-design/icons';
+import { numberWithCommas } from '../utils/utils';
+import { UploadOutlined } from '@mui/icons-material';
+import { Button, Form, Input, Modal, Select, Upload, message } from 'antd'
 import axiosDriver from '../config/axios';
+import { Link } from 'react-router-dom';
 
 
 const ListProductPage = () => {
-  useLogin();
-//   const dispatch = useDispatch()
-  const [itemsData, setItemsData] = useState([]);
-  const [popupModal, setPopupModal] = useState(false)
-  // const [editItem, setEditItems] = useState(null);
+  const [products, setProducts] = useState([]);
+        const [popupModal, setPopupModal] = useState(false)
+        const [tags, setTags] = useState([])
+        const [categorys, setCategorys] = useState([])
+        const formRef = useRef();
+        useLogin();
+
+        const normFile = (e) => {
+            console.log('Upload event:', e);
+            if (Array.isArray(e)) {
+              return e;
+            }
+            return e?.fileList;
+          };
+       
+    
+        useEffect(() => {
+            getAllitems((data) => {
+               setProducts(data.data)
+               console.log(data.data)
+            });
+        }, [])
+
+        useEffect(() => {
+            getAllTag((data) => {
+              setTags(data)
+            })
+          }, [])
+          
+          useEffect(() => {
+            getAllCategory((data) => {
+              setCategorys(data)
+            })
+          }, [])
+
+        const getAllItem = async () => {
+            try {
+                let response = await axiosDriver.get("http://localhost:3000/api/products")
+                setProducts(response.data.data)
+                console.log(response.data.data)
+            } catch (e) {
+                console.log(e.message)
+            }
+        }
+        
+          const deleteProduct = async (id) => {
+            try {
+              await axiosDriver.delete(`http://localhost:3000/api/products/${id}`);
+              getAllItem();
+            } catch (error) {
+              console.log(error);
+            }
+          };
+    
+        const handleSubmit = async (value) => {
   
-  const normFile = (e) => {
-    console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList;
-  };
-
-//   const getAllitems = async () => {
-//     try {
-//     //   dispatch({
-//     //     type:'SHOW_LOADING'
-//     //   });
-//       const { data } = await axios.get("http://localhost:3000/api/products")
-//       setItemsData(data.data);
-//     //   dispatch({type: "HIDE_LOADING"});
-//       console.log(data.data)
-//     } catch (error) {
-//       console.log(error)
-//     }
-//   }
-
-// useEffect(() => {
-//   getAllitems();
-// }, [])
-useEffect(() => {
-  getAllitems((data) => {
-     setItemsData(data.data)
-  });
-}, [])
-
-
-//data
-
-const columns = [
-    {title: 'Image', dataIndex:'image',
-    render:(image,record) =>(<CardMedia
-    component="img"
-    src={
-      "http://localhost:3000/images/products/" +
-      record.image_url
-    }
-    alt="food"
-  />)},
-    {title: 'Name', dataIndex:'name'},
-    {title: 'Description', dataIndex:'description'},
-    {title:'Price', dataIndex:'price'},
-    // {title: 'Category', dataIndex:'category.name',
-    // render:(text, record) => record.category.name
-    // }, 
-    // {title: 'Tag', dataIndex:'tag.name',
-    // render:(text, record) => record.tag.name
-    // }, 
-    {title: 'Actions', dataIndex:"_id", 
-    render :(id, record) => (
-    <div>
-    <EditOutlined 
-      style={{ cursor:'pointer' }} 
-      // onClick={() => {
-      //   setEditItems(record);
-      //   setPopupModal(true);
-      // }}
-    />
-    <DeleteOutlined style={{ cursor:'pointer' }}/>
-    </div>
-    ),
-  }
-];
-
-// handle submit 
-const handleSubmit = async (value) => {
-  
-  try {
-    const file = value.upload[0]?.originFileObj;
-
-    const formData = new FormData();
-      formData.append("image", file);
-      formData.append("name", value.name);
-      formData.append("description", value.description);
-      formData.append("price", value.price);
-      formData.append("tag", value.tag);
-      formData.append("category", value.category);
+            try {
+              const file = value.upload[0]?.originFileObj;
+          
+              const formData = new FormData();
+                formData.append("image", file);
+                formData.append("name", value.name);
+                formData.append("description", value.description);
+                formData.append("price", value.price);
+                formData.append("tags[]", value.tag);
+                formData.append("category", value.category);
+                
+          
+              console.log(value)
+              // dispatch({
+              //   type:'SHOW_LOADING'
+              // });
+              await axiosDriver.post("http://localhost:3000/api/products", formData);
+              message.success('item added Sucessfully')
+            //   formRef.current.reset();
+              getAllItem();
+              setPopupModal(false)
+              // dispatch({type: "HIDE_LOADING"});
+            } catch (error) {
+              message.error('something wrong')
+              console.log(error)
+            }
+          }
       
-
-    console.log(value)
-    // dispatch({
-    //   type:'SHOW_LOADING'
-    // });
-    const res = await axiosDriver.post("http://localhost:3000/api/products", formData);
-    message.success('item added Sucessfully')
-    getAllitems((data) => {
-      setItemsData(data.data)
-   });
-    setPopupModal(false)
-    // dispatch({type: "HIDE_LOADING"});
-  } catch (error) {
-    message.error('something wrong')
-    console.log(error)
-  }
-}
-
   return (
     <DefaultLayout>
-      <div className='d-flex justify-content-between'>
-        <h1 className='font-bold text-2xl'>List Product</h1>
-        <Button className='bg-blue-600 text-white my-3' onClick={() => setPopupModal(true)}>Add Product</Button>
-        <Table columns={columns} dataSource={itemsData} bordered />
-
         <Modal 
           title="Add Product" 
           open={popupModal} 
           footer={null}
           onCancel={() => setPopupModal(false)}
         >
-        <Form layout='vertical' onFinish={handleSubmit}>
+        <Form layout='vertical' ref={formRef} onFinish={handleSubmit}>
           <Form.Item name="name" value='name' label="Name">
             <Input />
           </Form.Item>
@@ -142,18 +113,18 @@ const handleSubmit = async (value) => {
           <Form.Item name="price" label="Price">
             <Input />
           </Form.Item>
-          <Form.Item name='tag' label='Tag'>
+          <Form.Item name='tag' label="Tag'">
             <Select>
-              <Select.Option value='spicy'>spicy</Select.Option>
-              <Select.Option value='notspicy'>Not Spicy</Select.Option>
-              <Select.Option value='snack'>Snack</Select.Option>
+            {tags.map(tag => (
+                    <Select.Option key={tag.name} value={tag.name}> {tag.name}</Select.Option>
+                ))}        
             </Select>
           </Form.Item>
           <Form.Item name='category' label='Category'>
             <Select>
-              <Select.Option value='drinks'>Drinks</Select.Option>
-              <Select.Option value='food'>Foods</Select.Option>
-              <Select.Option value='snack'>Snack</Select.Option>
+            {categorys.map(category => (
+                    <Select.Option key={category.name} value={category.name} > {category.name}</Select.Option>
+                ))}
             </Select>
           </Form.Item>
           <Form.Item
@@ -172,7 +143,70 @@ const handleSubmit = async (value) => {
           </Form.Item>
         </Form>
       </Modal>
+        <div className="relative overflow-x-auto  sm:rounded-lg">
+        <h1 className='font-bold text-2xl'>Data Product</h1>
+        <Button className='bg-blue-600 text-white my-5' onClick={() => setPopupModal(true)}>Add Product</Button>
+            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" className="px-6 py-3">
+                            Image
+                            <span className="sr-only">Image</span>
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                            Name
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                            Description
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                           Tag
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                          Category
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                            Price
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {products.map(product => (
+                    <tr key={product._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <td className="w-32 p-4">
+                            <img 
+                            src={"http://localhost:3000/images/products/"+ product.image_url.toLowerCase()}
+                            alt={product.image} />
+                        </td>
+                        <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                            {product.name}
+                        </td>
+                        <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                            {product.description}
+                        </td>
+                        <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                            {/* {product.tags?.map(tag => tag.name).join(', ')} */}
+                            {product.tags?.name}
+                        </td>
+                        <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                            {product.category?.name}
+                        </td>
+                        <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                            Rp {numberWithCommas(product.price)}
+                        </td>
+                        <td className="flex-wrap px-6 py-4 justify-start">
+                            <Link to={`/dataproducts/edit/${product._id}`} className="font-medium text-green-600 dark:text-Green-500 hover:underline"><EditOutlined/></Link>
+                            <a href="#" className="font-medium text-red-600 dark:text-red-500 hover:underline mx-3" onClick={() => deleteProduct(product._id)}><DeleteOutlined/></a>
+                        </td>
+                    </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
+
     </DefaultLayout>
   )
 }
@@ -303,3 +337,98 @@ export default ListProductPage;
         </tbody>
     </table>
 </div> */}
+
+
+// import axios from "axios";
+// import axiosDriver from "../config/axios";
+
+// export const getDetailItems = (id, callback) => {
+//     axiosDriver.get(`http://localhost:3000/api/products/${id}`)
+//         .then((res) => {
+//             callback(res.data);
+//         })
+//         .catch((err) => {
+//             console.log(err);
+//         })
+// }
+
+// export const getAllitems = (params, callback) => {
+//     axiosDriver.get("http://localhost:3000/api/products",{params})
+//         .then((res) => {
+//             callback(res.data);
+//         })
+//         .catch((err) => {
+//             console.log(err);
+//         })
+// }
+
+// export const getProducts = async (params) => {
+//     try {
+//         const response = await axiosDriver.get("http://localhost:3000/api/products",{params})
+//         return response.data
+//     } catch (error) {
+//         console.log(error)
+//     }
+// } 
+
+// export const deleteitems = (_id, callback) => {
+//     axiosDriver.get(`http://localhost:3000/api/products/${id}`)
+//         .then((res) => {
+//             callback(res.data);
+//         })
+//         .catch((err) => {
+//             console.log(err);
+//         })
+// }
+
+
+
+// // export const deleteItems = async (id) => {
+// //     try {
+// //       await axiosDriver.delete(`http://localhost:3000/api/products/${id}`);
+// //       getAllitems();
+// //     } catch (error) {
+// //       console.log(error);
+// //     }
+// //   };
+
+// export const getAllTag= (callback) => {
+//     axiosDriver.get("http://localhost:3000/api/tag")
+//         .then((res) => {
+//             callback(res.data);
+//         })
+//         .catch((err) => {
+//             console.log(err);
+//         })
+// }
+
+// export const getAllCategory= (callback) => {
+//     axiosDriver.get("http://localhost:3000/api/category")
+//         .then((res) => {
+//             callback(res.data);
+//         })
+//         .catch((err) => {
+//             console.log(err);
+//         })
+// }
+
+// export const getAllAddres= (callback) => {
+//     axiosDriver.get("http://localhost:3000/api/delivery-addresses")
+//         .then((res) => {
+//             callback(res.data);
+//         })
+//         .catch((err) => {
+//             console.log(err);
+//         })
+// }
+
+// export const getAllOrder= (callback) => {
+//     axiosDriver.get("http://localhost:3000/api/orders")
+//         .then((res) => {
+//             callback(res.data);
+//         })
+//         .catch((err) => {
+//             console.log(err);
+//         })
+// }
+
