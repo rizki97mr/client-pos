@@ -3,8 +3,10 @@ import { numberWithCommas } from "../../utils/utils";
 import Button from "../Elements/Button"
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { useDispatch } from "react-redux";
-import { addToCart } from "../../redux/slices/cartSlice";
 import { message } from "antd";
+import { useState } from "react";
+import axiosDriver from "../../config/axios";
+import { addtocart } from "../../redux/feature/card/actions";
 
 const CardProduct = (props) => {
     const { children } = props
@@ -45,17 +47,29 @@ const Body = (props) => {
 };
 
 const Footer = (props) => {
-    const { price, _id } = props;
+    const { product } = props;
+    const [carts, setCarts] = useState([])
     const dispatch = useDispatch();
+
+    // const handleAddToCart = async () => {
+    //     try {
+    //         let response = await axiosDriver.put("http://localhost:3000/api/carts")
+    //         setCarts(response.data)
+    //         console.log(response.data)
+    //     } catch (e) {
+    //         console.log(e.message)
+    //     }
+    // }
 
     return (
         <div className='flex items-center justify-between px-5 pb-5'>
-            <span className='text-xl font-bold text-white'>Rp {numberWithCommas(price)}</span>
+            <span className='text-xl font-bold text-white'>Rp {numberWithCommas(product.price)}</span>
             <Button 
                 classname="bg-blue-600" 
                 onClick={() => {
-                    dispatch(addToCart({ _id, qty: 1 }));
+                    dispatch(addtocart( product ));
                     message.success('item added Sucessfully');
+                    // handleAddToCart();
                 }}
             >
                 <AddShoppingCartIcon />

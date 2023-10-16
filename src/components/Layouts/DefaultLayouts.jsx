@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Layout, Menu } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -20,6 +20,8 @@ import {
 } from "@ant-design/icons";
 import "../../styles/DefaultLayout.css";
 import { Badge, IconButton } from "@mui/material";
+import { getAllCarts } from "../../services/product.service";
+import { getCart } from "../../redux/feature/card/actions";
 const { Header, Sider, Content } = Layout;
 const handleLogout = () => {
     localStorage.removeItem("token");
@@ -77,14 +79,24 @@ const menus = [
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
     const [totalCart, setTotalCart] = useState(0);
-    const cart = useSelector((state) => state.cart.data);
+    const carts = useSelector((state) => state.cart.cart);
+    const dispatch = useDispatch();
+
+    // useEffect(() => {
+    //   const sum = cart.reduce((acc, product) => {
+    //     return acc + product;
+    //   }, 0);
+    //   setTotalCart(sum);
+    // }, [cart])
 
     useEffect(() => {
-      const sum = cart.reduce((acc, item) => {
-        return acc + item.qty;
-      }, 0);
-      setTotalCart(sum);
-    }, [cart])
+      dispatch(getCart());
+  }, [])
+
+  useEffect(() => { 
+    console.log("layout", carts)
+}, [carts])
+
 
   const toggle = () => {
     setCollapsed(
@@ -121,7 +133,7 @@ const menus = [
             <IconButton color="inherit" 
             onClick={() => navigate('/cart')}
             >
-              <Badge badgeContent={totalCart} color="secondary" className="mr-3">
+              <Badge badgeContent={carts.length} color="secondary" className="mr-3">
                 <ShoppingCartIcon className="text-white "/>
               </Badge>
             </IconButton>

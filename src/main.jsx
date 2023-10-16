@@ -16,7 +16,7 @@ import { Provider } from "react-redux"
 import store from "./redux/store"
 import CartPage from './pages/cartPage'
 import Invoice from './pages/invoice'
-import DataProduct from './pages/dataProduct'
+import DataProduct from './pages/listProducts'
 import FormModal from './components/Fragments/EditProduct'
 import EditProduct from './components/Fragments/EditProduct'
 import EditAddres from './components/Fragments/EditAddres'
@@ -66,7 +66,7 @@ const router = createBrowserRouter([
     element: <CartPage />
   },
   {
-    path: "/invoice",
+    path: "/invoice/:id",
     element: <Invoice />
   },
   {
