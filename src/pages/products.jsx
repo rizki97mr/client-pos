@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import CardProduct from '../components/Fragments/CardProduct'
 import DefaultLayout from '../components/Layouts/DefaultLayouts';
-import { getAllCategory, getAllTag, getAllitems, getProducts } from '../services/product.service';
+import { getAllCarts, getAllCategory, getProducts } from '../services/product.service';
 import { useLogin } from '../hooks/useLogin';
-import { Pagination, PaginationLarge } from '../components/Fragments/Pagination';
+import { PaginationLarge } from '../components/Fragments/Pagination';
 import { Tag } from '../components/Fragments/Tag';
 
 
@@ -16,8 +16,8 @@ const ProductsPage = () => {
     const [categorys, setCategorys] = useState([]);
     const [category, setCategory] = useState("");
 
-    const [page, setPage] = useState(0);
-    const [limit, setLimit] = useState(10);
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(8);
     const [totalData, setTotalData] = useState(0);
     
    
@@ -30,10 +30,16 @@ const ProductsPage = () => {
           })
     }, [])
 
+    useEffect(() => {
+        fetchData()
+    }, [page])
+
     const fetchData = async () => {
         const data = await getProducts({
             q: search,
             category,
+            limit: limit,
+            skip: (page-1) * limit,
         })
         console.log(data)
         setProducts(data.data)
@@ -65,7 +71,7 @@ const ProductsPage = () => {
                 <form onSubmit={emitSearch}>
                     <div className="flex">
                     <select onChange={handleCategoryChange} id="category" className="mr-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">Category
-                                <option selected>All Category</option>
+                                <option>All Category</option>
                                 {categorys.map(category => (
                                 <option key={category.name} value={category.name}>{category.name}</option>
                                 ))}
@@ -95,8 +101,7 @@ const ProductsPage = () => {
                             {product.description}
                         </CardProduct.Body>
                     <CardProduct.Footer 
-                        price={product.price} 
-                        id={product._id}  
+                        product={product} 
                     />
                 </CardProduct> 
             ))}
@@ -104,7 +109,7 @@ const ProductsPage = () => {
         
         </div>
         <div className='flex justify-center py-3'>
-            <PaginationLarge 
+            <PaginationLarge
                 total={totalData}
                 itemsPerPage={limit}
                 currentPage={page}
