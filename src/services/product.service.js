@@ -1,4 +1,3 @@
-import axios from "axios";
 import axiosDriver from "../config/axios";
 
 export const getDetailItems = (id, callback) => {
@@ -11,7 +10,7 @@ export const getDetailItems = (id, callback) => {
         })
 }
 
-export const getAllitems = (callback) => {
+export const getAllitems = (callback, props) => {
     axiosDriver.get("http://localhost:3000/api/products")
         .then((res) => {
             callback(res.data);
@@ -28,6 +27,15 @@ export const getProducts = async (params) => {
     } catch (error) {
         console.log(error)
     }
+}
+
+export const getInvoices = async (params) => {
+    try {
+        const response = await axiosDriver.get("http://localhost:3000/api/orders",{params})
+        return response.data
+    } catch (error) {
+        console.log(error)
+    }
 } 
 
 export const deleteitems = (_id, callback) => {
@@ -40,16 +48,6 @@ export const deleteitems = (_id, callback) => {
         })
 }
 
-
-
-// export const deleteItems = async (id) => {
-//     try {
-//       await axiosDriver.delete(`http://localhost:3000/api/products/${id}`);
-//       getAllitems();
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
 
 export const getAllTag= (callback) => {
     axiosDriver.get("http://localhost:3000/api/tag")
@@ -90,4 +88,45 @@ export const getAllOrder= (callback) => {
             console.log(err);
         })
 }
+
+export const getAllCarts= (callback) => {
+    axiosDriver.get("http://localhost:3000/api/carts")
+        .then((res) => {
+            callback(res.data);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+}
+
+export const addToCarts= (callback) => {
+    axiosDriver.put("http://localhost:3000/api/carts")
+        .then((res) => {
+            callback(res.data);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+}
+
+export const getDetailInvoice = (id, callback) => {
+    axiosDriver.get(`http://localhost:3000/api/invoice/${id}`)
+        .then((res) => {
+            callback(res.data);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+}
+export const getOrders = (id, callback) => {
+    axiosDriver.get(`http://localhost:3000/api/orders`)
+        .then((res) => {
+            callback(res.data);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+}
+
+
 
