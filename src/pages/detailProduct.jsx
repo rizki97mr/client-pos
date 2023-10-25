@@ -1,23 +1,22 @@
 import { useEffect, useState } from "react";
-import { useParams }from "react-router-dom";
+import { Link, useParams }from "react-router-dom";
 import { getDetailItems } from "../services/product.service";
 import DefaultLayout from "../components/Layouts/DefaultLayouts";
 import { useDispatch } from "react-redux";
 import { numberWithCommas } from "../utils/utils";
-// import { addToCart } from "../redux/slices/cartSlice";
+import { addtocart } from "../redux/feature/card/actions";
+
 
 const DetailProduct = () => {
   const [detail, setDetail] = useState ({});
   const {id} = useParams();
-//   const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getDetailItems(id, (data) => {
         setDetail(data)
     })
   }, [id])
-
-
 
   
   return (
@@ -35,8 +34,7 @@ const DetailProduct = () => {
                     {detail.price}
                 </div>
                 <div className="w-full text-lg font-semibold text-slate-700 mt-2">
-                   {detail.price}
-                    {/* Rp {numberWithCommas(detail.price)} */}
+                    Rp {numberWithCommas(detail?.price)}
                 </div>
                 </div>
                 <div className="flex items-baseline mt-4 mb-6 pb-6 border-b border-slate-200">
@@ -46,17 +44,18 @@ const DetailProduct = () => {
                 </div>
                 <div className="flex space-x-4 mb-6 text-sm font-medium">
                 <div className="flex-auto flex space-x-4">
-                    <button   
-                        className="h-10 px-6 font-semibold rounded-md bg-black text-white" type="submit"
-                    >
+                <Link to='/cart'>
+                    <button className="h-10 px-6 font-semibold rounded-md bg-black text-white">
                         Buy
                     </button>
+                </Link>
                     <button 
-                    // onClick={() => {
-                    //     dispatch(addToCart({ _id, qty: 1 }));
-                    //     message.success('item added Sucessfully');
-                    // }}
-                    className="h-10 px-6 font-semibold rounded-md border border-slate-200 text-slate-900" type="button">
+                    className="h-10 px-6 font-semibold rounded-md border border-slate-200 text-slate-900" type="button"
+                    onClick={() => {
+                        dispatch(addtocart( product ));
+                        message.success('item added Sucessfully');
+                    }}
+                    >
                         Add to Cart
                     </button>
                 </div>

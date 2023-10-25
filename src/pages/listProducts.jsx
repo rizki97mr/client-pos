@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import DefaultLayout from '../components/Layouts/DefaultLayouts'
-import { getAllCategory, getAllTag, getAllitems } from '../services/product.service';
+import { getAllCategory, getAllTag, getAllitems, getProducts } from '../services/product.service';
 import { useLogin } from '../hooks/useLogin';
 import { DeleteOutlined, EditOutlined} from '@ant-design/icons';
 import { numberWithCommas } from '../utils/utils';
@@ -8,14 +8,17 @@ import { UploadOutlined } from '@mui/icons-material';
 import { Button, Form, Input, Modal, Select, Upload, message } from 'antd'
 import axiosDriver from '../config/axios';
 import { Link } from 'react-router-dom';
+import { PaginationMedium } from '../components/Fragments/Pagination';
 
-
-const ListProductPage = () => {
-  const [products, setProducts] = useState([]);
+const DataProduct = () => {
+        const [products, setProducts] = useState([]);
         const [popupModal, setPopupModal] = useState(false)
         const [tags, setTags] = useState([])
         const [categorys, setCategorys] = useState([])
         const formRef = useRef();
+        const [page, setPage] = useState(1);
+        const [limit, setLimit] = useState(10);
+        const [totalData, setTotalData] = useState(0);
         useLogin();
 
         const normFile = (e) => {
@@ -28,23 +31,25 @@ const ListProductPage = () => {
        
     
         useEffect(() => {
-            getAllitems((data) => {
-               setProducts(data.data)
-               console.log(data.data)
-            });
-        }, [])
-
-        useEffect(() => {
+            fetchData()
             getAllTag((data) => {
               setTags(data)
-            })
-          }, [])
-          
-          useEffect(() => {
+            });
             getAllCategory((data) => {
               setCategorys(data)
-            })
-          }, [])
+            });
+        }, [page])
+
+
+        const fetchData = async () => {
+          const data = await getProducts({
+              limit: limit,
+              skip: (page-1) * limit,
+          })
+          console.log(data)
+          setProducts(data.data)
+          setTotalData(data.count)
+      }
 
         const getAllItem = async () => {
             try {
@@ -205,230 +210,18 @@ const ListProductPage = () => {
                     ))}
                 </tbody>
             </table>
+            <div className='flex justify-center py-3'>
+              <PaginationMedium
+                  total={totalData}
+                  itemsPerPage={limit}
+                  currentPage={page}
+                  onPageChange={setPage}
+              />
+            </div>  
         </div>
 
     </DefaultLayout>
   )
 }
 
-export default ListProductPage;
-
-{/* <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-                <th scope="col" class="px-6 py-3">
-                    <span class="sr-only">Image</span>
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Product
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Qty
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Price
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Action
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <td class="w-32 p-4">
-                    <img src="/docs/images/products/apple-watch.png" alt="Apple Watch"/>
-                </td>
-                <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                    Apple Watch
-                </td>
-                <td class="px-6 py-4">
-                    <div class="flex items-center space-x-3">
-                        <button class="inline-flex items-center justify-center p-1 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
-                            <span class="sr-only">Quantity button</span>
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
-                            </svg>
-                        </button>
-                        <div>
-                            <input type="number" id="first_product" class="bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="1" required/>
-                        </div>
-                        <button class="inline-flex items-center justify-center h-6 w-6 p-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
-                            <span class="sr-only">Quantity button</span>
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
-                            </svg>
-                        </button>
-                    </div>
-                </td>
-                <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                    $599
-                </td>
-                <td class="px-6 py-4">
-                    <a href="#" class="font-medium text-red-600 dark:text-red-500 hover:underline">Remove</a>
-                </td>
-            </tr>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <td class="w-32 p-4">
-                    <img src="/docs/images/products/imac.png" alt="Apple Imac"/>
-                </td>
-                <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                    Imac 27"
-                </td>
-                <td class="px-6 py-4">
-                    <div class="flex items-center space-x-3">
-                        <button class="inline-flex items-center justify-center p-1 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
-                            <span class="sr-only">Quantity button</span>
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
-                            </svg>
-                        </button>
-                        <div>
-                            <input type="number" id="first_product" class="bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="1" required/>
-                        </div>
-                        <button class="inline-flex items-center justify-center h-6 w-6 p-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
-                            <span class="sr-only">Quantity button</span>
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
-                            </svg>
-                        </button>
-                    </div>
-                </td>
-                <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                    $2499
-                </td>
-                <td class="px-6 py-4">
-                    <a href="#" class="font-medium text-red-600 dark:text-red-500 hover:underline">Remove</a>
-                </td>
-            </tr>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <td class="w-32 p-4">
-                    <img src="/docs/images/products/iphone-12.png" alt="Iphone 12"/>
-                </td>
-                <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                    Iphone 12 
-                </td>
-                <td class="px-6 py-4">
-                    <div class="flex items-center space-x-3">
-                        <button class="inline-flex items-center justify-center p-1 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
-                            <span class="sr-only">Quantity button</span>
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
-                            </svg>
-                        </button>
-                        <div>
-                            <input type="number" id="first_product" class="bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="1" required/>
-                        </div>
-                        <button class="inline-flex items-center justify-center h-6 w-6 p-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
-                            <span class="sr-only">Quantity button</span>
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
-                            </svg>
-                        </button>
-                    </div>
-                </td>
-                <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                    $999
-                </td>
-                <td class="px-6 py-4">
-                    <a href="#" class="font-medium text-red-600 dark:text-red-500 hover:underline">Remove</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div> */}
-
-
-// import axios from "axios";
-// import axiosDriver from "../config/axios";
-
-// export const getDetailItems = (id, callback) => {
-//     axiosDriver.get(`http://localhost:3000/api/products/${id}`)
-//         .then((res) => {
-//             callback(res.data);
-//         })
-//         .catch((err) => {
-//             console.log(err);
-//         })
-// }
-
-// export const getAllitems = (params, callback) => {
-//     axiosDriver.get("http://localhost:3000/api/products",{params})
-//         .then((res) => {
-//             callback(res.data);
-//         })
-//         .catch((err) => {
-//             console.log(err);
-//         })
-// }
-
-// export const getProducts = async (params) => {
-//     try {
-//         const response = await axiosDriver.get("http://localhost:3000/api/products",{params})
-//         return response.data
-//     } catch (error) {
-//         console.log(error)
-//     }
-// } 
-
-// export const deleteitems = (_id, callback) => {
-//     axiosDriver.get(`http://localhost:3000/api/products/${id}`)
-//         .then((res) => {
-//             callback(res.data);
-//         })
-//         .catch((err) => {
-//             console.log(err);
-//         })
-// }
-
-
-
-// // export const deleteItems = async (id) => {
-// //     try {
-// //       await axiosDriver.delete(`http://localhost:3000/api/products/${id}`);
-// //       getAllitems();
-// //     } catch (error) {
-// //       console.log(error);
-// //     }
-// //   };
-
-// export const getAllTag= (callback) => {
-//     axiosDriver.get("http://localhost:3000/api/tag")
-//         .then((res) => {
-//             callback(res.data);
-//         })
-//         .catch((err) => {
-//             console.log(err);
-//         })
-// }
-
-// export const getAllCategory= (callback) => {
-//     axiosDriver.get("http://localhost:3000/api/category")
-//         .then((res) => {
-//             callback(res.data);
-//         })
-//         .catch((err) => {
-//             console.log(err);
-//         })
-// }
-
-// export const getAllAddres= (callback) => {
-//     axiosDriver.get("http://localhost:3000/api/delivery-addresses")
-//         .then((res) => {
-//             callback(res.data);
-//         })
-//         .catch((err) => {
-//             console.log(err);
-//         })
-// }
-
-// export const getAllOrder= (callback) => {
-//     axiosDriver.get("http://localhost:3000/api/orders")
-//         .then((res) => {
-//             callback(res.data);
-//         })
-//         .catch((err) => {
-//             console.log(err);
-//         })
-// }
-
+export default DataProduct

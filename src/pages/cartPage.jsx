@@ -33,16 +33,6 @@ const CartPage = () => {
         0,
       );
 
-    // useEffect(() => {
-    //     if (products.length > 0 && carts.length > 0) {
-    //         const sum = carts((acc, item) => {
-    //             const product = products.find((product) => product.id === item.id);
-    //             return acc + product.price * item.qty;
-    //         }, 0)
-    //         setTotalPrice(sum);
-    //         localStorage.setItem("cart", JSON.stringify(cart));
-    //     }
-    // }, [carts, products])
     
 
     const handleCheckOut = async (event) => {
@@ -86,7 +76,7 @@ const CartPage = () => {
                                         <span className="font-semibold">{cart.name}</span>
                                     </div>
                                 </td>
-                                <td className="py-4">Rp {numberWithCommas (cart.price)}</td>
+                                <td className="py-4">Rp {numberWithCommas (cart.product.price)}</td>
                                 <td className="py-4">
                                     <div className="flex items-center">
                                         {/* <button className="border rounded-md py-2 px-4 mr-2">-</button> */}
@@ -94,7 +84,7 @@ const CartPage = () => {
                                         {/* <button className="border rounded-md py-2 px-4 ml-2">+</button> */}
                                     </div>
                                 </td>
-                                <td className="py-4">Rp {numberWithCommas (cart.qty * cart.price)}</td>
+                                <td className="py-4">Rp {numberWithCommas (cart.qty * cart.product.price)}</td>
                             </tr>
                    
                             ))}
