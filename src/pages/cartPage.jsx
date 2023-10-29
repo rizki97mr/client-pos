@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import DefaultLayout from '../components/Layouts/DefaultLayouts'
 import { useSelector } from "react-redux";
-import { getAllAddres, getAllCarts, getAllitems } from '../services/product.service';
+import { getAllAddres, getAllitems } from '../services/product.service';
 import { useLogin } from '../hooks/useLogin';
 import { numberWithCommas } from '../utils/utils';
 import axiosDriver from '../config/axios';
@@ -9,11 +9,9 @@ import { useNavigate } from 'react-router-dom';
 
 
 const CartPage = () => {
-    // const cart = useSelector((state) => state.cart.data);
     const carts = useSelector((state) => state.cart.cart);
     const [products, setProducts] = useState([]);
     const [address, setAddress] = useState([]);
-    const [totalPrice, setTotalPrice] = useState(0);
     const navigate = useNavigate();
     
 

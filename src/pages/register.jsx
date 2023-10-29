@@ -1,4 +1,5 @@
-import FormRegister from "../components/Fragments/formRegister"
+
+import FormRegister from "../components/Fragments/formRegis"
 import AuthLayouts from "../components/Layouts/AuthLayouts"
 
 const RegisterPage = (props) => {

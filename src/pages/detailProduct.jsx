@@ -5,6 +5,7 @@ import DefaultLayout from "../components/Layouts/DefaultLayouts";
 import { useDispatch } from "react-redux";
 import { numberWithCommas } from "../utils/utils";
 import { addtocart } from "../redux/feature/card/actions";
+import { message } from "antd";
 
 
 const DetailProduct = () => {
@@ -50,12 +51,12 @@ const DetailProduct = () => {
                     </button>
                 </Link>
                     <button 
-                    className="h-10 px-6 font-semibold rounded-md border border-slate-200 text-slate-900" type="button"
-                    onClick={() => {
-                        dispatch(addtocart( product ));
-                        message.success('item added Sucessfully');
-                    }}
-                    >
+                        className="h-10 px-6 font-semibold rounded-md border border-slate-200 text-slate-900" type="button"
+                        onClick={() => {
+                            dispatch(addtocart( detail ));
+                            message.success('item added Sucessfully');
+                        }}
+                        >
                         Add to Cart
                     </button>
                 </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import DefaultLayout from '../components/Layouts/DefaultLayouts'
-import { getAllCategory, getAllTag, getAllitems, getProducts } from '../services/product.service';
+import { getAllCategory, getAllTag, getProducts } from '../services/product.service';
 import { useLogin } from '../hooks/useLogin';
 import { DeleteOutlined, EditOutlined} from '@ant-design/icons';
 import { numberWithCommas } from '../utils/utils';
@@ -83,17 +83,10 @@ const DataProduct = () => {
                 formData.append("tags[]", value.tag);
                 formData.append("category", value.category);
                 
-          
-              console.log(value)
-              // dispatch({
-              //   type:'SHOW_LOADING'
-              // });
               await axiosDriver.post("http://localhost:3000/api/products", formData);
               message.success('item added Sucessfully')
-            //   formRef.current.reset();
               getAllItem();
               setPopupModal(false)
-              // dispatch({type: "HIDE_LOADING"});
             } catch (error) {
               message.error('something wrong')
               console.log(error)
@@ -148,9 +141,15 @@ const DataProduct = () => {
           </Form.Item>
         </Form>
       </Modal>
+
         <div className="relative overflow-x-auto  sm:rounded-lg">
-        <h1 className='font-bold text-2xl'>Data Product</h1>
-        <Button className='bg-blue-600 text-white my-5' onClick={() => setPopupModal(true)}>Add Product</Button>
+          <h1 className='font-bold text-2xl'>Data Product</h1>
+        <Button 
+            className='bg-blue-600 text-white my-5' 
+            onClick={() => setPopupModal(true)}
+            >
+              Add Product
+        </Button>
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>

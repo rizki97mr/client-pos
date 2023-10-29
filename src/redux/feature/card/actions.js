@@ -30,7 +30,6 @@ export const getCart =  () => {
     return (dispatch, getState) => {
     axiosDriver.get("http://localhost:3000/api/carts")
         .then((res) => {
-            console.log(res.data)
             dispatch({
                 type: ADD_TO_CART,
                 cart: res.data

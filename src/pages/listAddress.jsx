@@ -4,7 +4,6 @@ import { useLogin } from '../hooks/useLogin';
 import { Button, Form, Input, Modal, message } from 'antd'
 import { DeleteOutlined, EditOutlined} from '@ant-design/icons';
 import axiosDriver from '../config/axios';
-import { getAllAddres } from '../services/product.service';
 import { Link } from 'react-router-dom';
 
 const ListAddress = () => {
@@ -22,7 +21,6 @@ const ListAddress = () => {
         try {
             let response = await axiosDriver.get("http://localhost:3000/api/delivery-addresses")
             setAddress(response.data.data)
-            console.log(response.data.data)
         } catch (e) {
             console.log(e.message)
         }
@@ -39,10 +37,6 @@ const ListAddress = () => {
     
     const handleSubmit = async (value) => {
         try {
-          console.log(value)
-          // dispatch({
-          //   type:'SHOW_LOADING'
-          // });
           await axiosDriver.post("http://localhost:3000/api/delivery-addresses", {
             nama:value.nama,
             provinsi:value.provinsi,
@@ -54,7 +48,6 @@ const ListAddress = () => {
           message.success('item added Sucessfully')
           setPopupModal(false)
           getAllAddres();
-          // dispatch({type: "HIDE_LOADING"});
         } catch (error) {
           message.error('something wrong')
           console.log(error)

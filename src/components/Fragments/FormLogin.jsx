@@ -9,8 +9,6 @@ const FormLogin = () => {
         // localStorage.setItem("email", event.target.email.value);
         // localStorage.setItem("password", event.target.password.value);
         
-        // console.log(event.target.email.value);
-        // console.log(event.target.password.value);
         const data = {
             email: event.target.email.value,
             password: event.target.password.value
@@ -31,8 +29,8 @@ const FormLogin = () => {
   return (
     <form onSubmit={handleLogin}>
         <InputForm 
-            label="email" 
-            type="emial" 
+            label="Email" 
+            type="email" 
             placeholder="email" 
             name="email" 
           />

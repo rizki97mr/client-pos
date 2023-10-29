@@ -9,7 +9,6 @@ import {
   ProfileOutlined,
   LogoutOutlined,
   CopyOutlined,
-  // UnorderedListOutlined,
   SettingOutlined,
   ShoppingOutlined,
   ShopOutlined,
@@ -20,23 +19,45 @@ import {
 } from "@ant-design/icons";
 import "../../styles/DefaultLayout.css";
 import { Badge, IconButton } from "@mui/material";
-import { getAllCarts } from "../../services/product.service";
 import { getCart } from "../../redux/feature/card/actions";
+import axiosDriver from "../../config/axios";
 const { Header, Sider, Content } = Layout;
-const handleLogout = () => {
-    localStorage.removeItem("token");
+
+const handleLogout = async (event) => {
+  event.preventDefault();
+  localStorage.removeItem("token");
+  try {
+    const response = await axiosDriver.post("http://localhost:3000/auth/logout", {
+  });
+  } catch (error) {
+    console.log(error)
+  }
 }
+
+const user = [
+  {
+    key: 'shop',
+    icon: <ShopOutlined />,
+    label: <Link to="/">Shop</Link>,
+  },
+  {
+    key: 'transaksi',
+    icon: <ProfileOutlined />,
+    label: <Link to="/report">Transaction</Link>
+  }, 
+  {
+    key: 'logout',
+    icon: <LogoutOutlined />,
+    label: <Link to="/login" onClick={handleLogout}>Logout</Link>
+  },
+] 
+
 const menus = [
   {
       key: 'shop',
       icon: <ShopOutlined />,
       label: <Link to="/">Shop</Link>,
   },
-  // {
-  //     key: 'items',
-  //     icon: <UnorderedListOutlined />,
-  //     label: <Link to="/items">Items</Link>
-  // },
   {
       key: 'setting',
       icon: <SettingOutlined />,
@@ -78,24 +99,28 @@ const menus = [
   const DefaultLayout = ({children}) => {
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
-    const [totalCart, setTotalCart] = useState(0);
+    const [isAdmin, setIsAdmin] = useState({});
     const carts = useSelector((state) => state.cart.cart);
     const dispatch = useDispatch();
 
-    // useEffect(() => {
-    //   const sum = cart.reduce((acc, product) => {
-    //     return acc + product;
-    //   }, 0);
-    //   setTotalCart(sum);
-    // }, [cart])
 
     useEffect(() => {
+      getMe();
       dispatch(getCart());
   }, [])
 
-  useEffect(() => { 
-    console.log("layout", carts)
-}, [carts])
+    useEffect(() => { 
+      // console.log("layout", carts)
+  }, [carts])
+
+    const getMe = async () => {
+      try {
+          let response = await axiosDriver.get("http://localhost:3000/auth/me")
+          setIsAdmin(response.data)
+      } catch (e) {
+          console.log(e.message)
+      }
+    }
 
 
   const toggle = () => {
@@ -104,7 +129,6 @@ const menus = [
     );
   };
   //to get localstorage data
-
   
     return (
       <Layout>
@@ -116,7 +140,7 @@ const menus = [
             theme="dark"
             mode="inline"
             defaultSelectedKeys={window.location.pathname}
-            items={menus}
+            items={isAdmin.role === "admin" ? menus : user}
             className="my-12 text-white font-bold"
           >
           </Menu>
@@ -130,6 +154,9 @@ const menus = [
                 onClick: toggle,
               }
             )}
+            <h2 className="text-stone-100 text-lg font-semibold justify-center items-center">
+              {isAdmin.email}
+            </h2>
             <IconButton color="inherit" 
             onClick={() => navigate('/cart')}
             >

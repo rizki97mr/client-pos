@@ -4,8 +4,6 @@ import Button from "../Elements/Button"
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { useDispatch } from "react-redux";
 import { message } from "antd";
-import { useState } from "react";
-import axiosDriver from "../../config/axios";
 import { addtocart } from "../../redux/feature/card/actions";
 
 const CardProduct = (props) => {
@@ -21,12 +19,12 @@ const Header = (props) => {
     const {image, id} = props
     return (
         <Link to={`/product/${id}`}>
-                <img 
-                    src={image}
-                    alt="product" 
-                    className='p-3 rounded-t-lg h-56 w-full object-cover'
-                />
-            </Link>
+            <img 
+                src={image}
+                alt="product" 
+                className='p-3 rounded-t-lg h-56 w-full object-cover'
+            />
+        </Link>
     )
 }
 
@@ -48,18 +46,7 @@ const Body = (props) => {
 
 const Footer = (props) => {
     const { product } = props;
-    const [carts, setCarts] = useState([])
     const dispatch = useDispatch();
-
-    // const handleAddToCart = async () => {
-    //     try {
-    //         let response = await axiosDriver.put("http://localhost:3000/api/carts")
-    //         setCarts(response.data)
-    //         console.log(response.data)
-    //     } catch (e) {
-    //         console.log(e.message)
-    //     }
-    // }
 
     return (
         <div className='flex items-center justify-between px-5 pb-5'>
@@ -69,7 +56,6 @@ const Footer = (props) => {
                 onClick={() => {
                     dispatch(addtocart( product ));
                     message.success('item added Sucessfully');
-                    // handleAddToCart();
                 }}
             >
                 <AddShoppingCartIcon />

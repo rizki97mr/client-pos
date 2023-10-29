@@ -10,7 +10,7 @@ export const getDetailItems = (id, callback) => {
         })
 }
 
-export const getAllitems = (callback, props) => {
+export const getAllitems = (callback) => {
     axiosDriver.get("http://localhost:3000/api/products")
         .then((res) => {
             callback(res.data);

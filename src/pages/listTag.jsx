@@ -30,14 +30,10 @@ const ListTag = () => {
   
     try {
       console.log(value)
-      // dispatch({
-      //   type:'SHOW_LOADING'
-      // });
       await axiosDriver.post("http://localhost:3000/api/tag", {name:value.name});
       message.success('item added Sucessfully')
       setPopupModal(false)
       getAllTags();
-      // dispatch({type: "HIDE_LOADING"});
     } catch (error) {
       message.error('something wrong')
       console.log(error)

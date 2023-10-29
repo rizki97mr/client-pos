@@ -11,7 +11,6 @@ const Invoice = () => {
     useEffect(() => {
         getDetailInvoice(id, (data) => {
             setInvoices(data)
-            console.log(data)
         })
       }, [id])
 

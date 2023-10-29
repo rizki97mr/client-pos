@@ -1,15 +1,6 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 
-// export const login = (data) => {
-//     axios.post('https://fakestoreapi.com/auth/login', data)
-//         .then((res) => {
-//             console.log(res)
-//         })
-//         .catch((err) => {
-//             console.log(err)
-//         })
-// }
 export const login = (data, callback) => {
     axios.post('http://localhost:3000/auth/login', data)
         .then((res) => {
@@ -21,15 +12,28 @@ export const login = (data, callback) => {
         })
 }
 
-// export const logins = async () => {
-//     try {
-//         const result = await axios.post("http://localhost:3000/auth/login", userData);
-//         // alert(result.data.msg)
-        
-//     } catch (err) {
-//         console.log(err)
-//     }
-// }
+export const logout = (data, callback) => {
+    axios.post('http://localhost:3000/auth/logout', data)
+        .then((res) => {
+            callback(true, res.data.token);
+        })
+        .catch((error) => {
+            callback(false, error)
+            console.log(error)
+        })
+}
+
+export const getUser = (callback) => {
+    axiosDriver.get("http://localhost:3000/auth/me")
+        .then((res) => {
+            callback(res.data);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+}
+
+
 
 export const getEmail = (token) => {
     const decoded = jwt_decode(token);

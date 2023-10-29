@@ -24,7 +24,7 @@ export const PaginationMedium = ({
     onPageChange(currentPage + 1)
   }
 
-  console.log(pages, totalPage, total, itemsPerPage)
+  // console.log(pages, totalPage, total, itemsPerPage)
   return (
         <nav aria-label="Page navigation example">
             <ul className="inline-flex -space-x-px text-sm">
@@ -37,8 +37,8 @@ export const PaginationMedium = ({
                   </span>
                 </li>
                 {
-                  pages.map(page => (
-                <li>
+                  pages.map((page, index) => (
+                <li key={index}>
                 <span className={`
                   flex 
                   items-center 
@@ -95,7 +95,7 @@ export const PaginationLarge = ({
     onPageChange(currentPage + 1)
   }
 
-  console.log(pages, totalPage, total, itemsPerPage)
+  // console.log(pages, totalPage, total, itemsPerPage)
   return (
     <nav aria-label="Page navigation example" className='justify-center  py-3'>
         <ul className="inline-flex -space-x-px text-base h-10 py-3 justify-center">
@@ -105,8 +105,8 @@ export const PaginationLarge = ({
                 className="flex items-center justify-center px-4 h-10 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Prev</span>
             </li>
           {
-            pages.map(page => (
-              <li>
+            pages.map((page, index) => (
+              <li key={index}>
               <span className={
                 `flex 
                 items-center 
@@ -138,30 +138,3 @@ export const PaginationLarge = ({
     </nav>
   )
 }
-
-
-// export const Pagination = ({
-   
-// }) => {
-//     let pages = [];
-
-//     for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++) {
-//         pages.push(i);
-//     }
-
-//     return (
-//         <div className='pagination'>
-//             {pages.map((page, index) => {
-//                 return (
-//                     <button
-//                         key={index}
-//                         onClick={() => setCurrentPage(page)}
-//                         className={page == currentPage ? "active" : ""}>
-//                         {page}
-//                     </button>
-//                 );
-//             })}
-//         </div>
-//     );
-// };
-

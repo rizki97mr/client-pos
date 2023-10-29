@@ -7,7 +7,7 @@ let initialState = {
 const counterReducer = (state = initialState, action) => {
     switch(action.type) {
         case ADD_TO_CART:
-            console.log("reducer", action)
+            // console.log("reducer", action)
             return{
                 ...state,
                 cart: action.cart 

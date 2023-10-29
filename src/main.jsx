@@ -16,11 +16,8 @@ import { Provider } from "react-redux"
 import store from "./redux/store"
 import CartPage from './pages/cartPage'
 import Invoice from './pages/invoice'
-import DataProduct from './pages/listProducts'
-import FormModal from './components/Fragments/EditProduct'
 import EditProduct from './components/Fragments/EditProduct'
 import EditAddres from './components/Fragments/EditAddres'
-import TableCart from './components/Fragments/TableCart'
 
 
 const router = createBrowserRouter([
@@ -76,14 +73,6 @@ const router = createBrowserRouter([
   {
     path: "/dataaddress/edit/:id",
     element: <EditAddres />
-  },
-  {
-    path: "/test",
-    element: <Invoice />
-  },
-  {
-    path: "/tcart",
-    element: <TableCart />
   },
 ])
 
