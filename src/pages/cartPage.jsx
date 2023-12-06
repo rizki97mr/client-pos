@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import DefaultLayout from '../components/Layouts/DefaultLayouts'
-import { useSelector } from "react-redux";
+import { DeleteOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from "react-redux";
 import { getAllAddres, getAllitems } from '../services/product.service';
 import { useLogin } from '../hooks/useLogin';
 import { numberWithCommas } from '../utils/utils';
 import axiosDriver from '../config/axios';
 import { useNavigate } from 'react-router-dom';
+import { plusQty, removeFromCart, updateQty } from '../redux/feature/card/actions';
+import { message } from 'antd';
 
 
 const CartPage = () => {
@@ -13,7 +16,7 @@ const CartPage = () => {
     const [products, setProducts] = useState([]);
     const [address, setAddress] = useState([]);
     const navigate = useNavigate();
-    
+    const dispatch = useDispatch();
 
     useLogin();
 
@@ -46,6 +49,10 @@ const CartPage = () => {
           console.log(error)
         }
       }
+    const handleInputQTY = async (cart, quantity) => {
+        console.log(quantity)
+        dispatch(updateQty(cart, quantity))
+      }
 
 
   return (
@@ -61,7 +68,7 @@ const CartPage = () => {
                             <tr>
                                 <th className="text-left font-semibold">Product</th>
                                 <th className="text-left font-semibold">Price</th>
-                                <th className="text-left font-semibold">Quantity</th>
+                                <th className="text-left font-semibold pl-10">Quantity</th>
                                 <th className="text-left font-semibold">Total</th>
                             </tr>
                         </thead>
@@ -77,9 +84,20 @@ const CartPage = () => {
                                 <td className="py-4">Rp {numberWithCommas (cart.product.price)}</td>
                                 <td className="py-4">
                                     <div className="flex items-center">
-                                        {/* <button className="border rounded-md py-2 px-4 mr-2">-</button> */}
-                                        <span className="text-center w-8">{cart.qty}</span>
-                                        {/* <button className="border rounded-md py-2 px-4 ml-2">+</button> */}
+                                        <input type="number" 
+                                            defaultValue={cart.qty} 
+                                            onChange={(e) => handleInputQTY(cart, e.target.value)} 
+                                            min={1} 
+                                            className="border rounded-md h-8 w-9 pl-3" 
+                                        />
+                                        <a href='#' className="font-medium text-red-600 dark:text-red-500 mx-3 my-2" 
+                                           onClick={() => {
+                                            dispatch(removeFromCart( cart ));
+                                            message.info('item remove Sucessfully');
+                                        }}
+                                        >
+                                        <DeleteOutlined/>
+                                        </a>
                                     </div>
                                 </td>
                                 <td className="py-4">Rp {numberWithCommas (cart.qty * cart.product.price)}</td>

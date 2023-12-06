@@ -40,3 +40,41 @@ export const getCart =  () => {
         }) 
 }
 }
+
+export const updateQty = (product, quantity) => {
+    return (dispatch, getState) => {
+        const cart = getState().cart.cart
+        const itemInCart = cart.find(
+            (item) => item._id === product._id
+        );
+        console.log(itemInCart, product, cart)
+        if (itemInCart) {
+            itemInCart.qty = quantity;
+        } 
+        axiosDriver.put("http://localhost:3000/api/carts", {
+            items: cart
+        })       
+    
+        dispatch({
+            type: ADD_TO_CART,
+            cart: [...cart]
+        }) 
+    }  
+}
+
+
+export const removeFromCart = (product) => {
+    return (dispatch, getState) => {
+        const cart = getState().cart.cart
+        const newCart = cart.filter((item) => item._id !== product._id)
+        
+        axiosDriver.put("http://localhost:3000/api/carts", {
+            items: newCart
+        })       
+    
+        dispatch({
+            type: ADD_TO_CART,
+            cart: [...newCart]
+        }) 
+    }  
+}
